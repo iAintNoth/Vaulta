@@ -1,0 +1,10 @@
+source_dir: "./source"
+backup_dir: "./backups"
+encrypt_password: ""
+sftp:
+  host: "test.rebex.net"
+  port: 22
+  username: "demo"
+  password: "password"
+  remote_dir: "/pub/example"
+retention_days: 3
