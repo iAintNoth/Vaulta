@@ -1,6 +1,8 @@
-
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QSpinBox, QTextEdit, QHBoxLayout
+from PyQt5.QtWidgets import (
+    QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton,
+    QFileDialog, QSpinBox, QTextEdit, QHBoxLayout
+)
 from config_manager import load_config, save_config
 from backup import create_backup
 from upload import upload_sftp
@@ -9,6 +11,44 @@ class BackupApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Backup Pro Configurable")
+        self.resize(1100, 800)  # finestra più grande
+
+        # ===== Stile globale =====
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #0D1117;
+                color: #C9D1D9;
+                font-family: 'Consolas', 'Courier New', monospace;
+                font-size: 14px;
+            }
+            QLineEdit, QSpinBox, QTextEdit {
+                background-color: #161B22;
+                border: 1px solid #30363D;
+                padding: 6px;
+                color: #C9D1D9;
+                border-radius: 4px;
+            }
+            QPushButton {
+                background-color: #6A5ACD;
+                color: white;
+                padding: 8px 14px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #4B0082;
+            }
+            QTextEdit {
+                background-color: #0B0F14;
+                color: #00FF7F;
+                font-size: 13px;
+                border: 1px solid #30363D;
+            }
+            QLabel {
+                font-weight: bold;
+            }
+        """)
+
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
@@ -28,11 +68,11 @@ class BackupApp(QWidget):
         self.retention_days = self.add_spin_field("Retention giorni", self.config.get("retention_days", 3))
 
         # Pulsanti
-        save_btn = QPushButton("Salva Configurazione")
+        save_btn = QPushButton("💾 Salva Configurazione")
         save_btn.clicked.connect(self.save_config)
         self.layout.addWidget(save_btn)
 
-        backup_btn = QPushButton("Esegui Backup")
+        backup_btn = QPushButton("▶ Esegui Backup")
         backup_btn.clicked.connect(self.run_backup)
         self.layout.addWidget(backup_btn)
 
@@ -45,7 +85,7 @@ class BackupApp(QWidget):
         self.layout.addWidget(QLabel(label))
         hl = QHBoxLayout()
         edit = QLineEdit(value)
-        browse_btn = QPushButton("Sfoglia")
+        browse_btn = QPushButton("📂 Sfoglia")
         browse_btn.clicked.connect(lambda: edit.setText(QFileDialog.getExistingDirectory(self, "Seleziona cartella")))
         hl.addWidget(edit)
         hl.addWidget(browse_btn)
