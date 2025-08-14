@@ -1,6 +1,6 @@
 backup_dir: C:/Users/danie/Desktop
 encrypt_password: ''
-retention_days: 3
+retention_days: 1
 sftp:
   host: test.rebex.net
   password: password

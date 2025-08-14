@@ -1,16 +1,23 @@
 import sys
+import requests
+import webbrowser
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton,
-    QFileDialog, QSpinBox, QTextEdit, QHBoxLayout
+    QFileDialog, QSpinBox, QTextEdit, QHBoxLayout, QMessageBox
 )
+from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 from config_manager import load_config, save_config
 from backup import create_backup
 from upload import upload_sftp
+from version import VERSION
+
 
 class BackupApp(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Backup Pro Configurable")
+        self.setWindowTitle("Vaulta")
+        self.setWindowIcon(QIcon("assets/favicon.ico"))
         self.resize(1100, 800)  # finestra più grande
 
         # ===== Stile globale =====
@@ -81,6 +88,10 @@ class BackupApp(QWidget):
         self.log_box.setReadOnly(True)
         self.layout.addWidget(self.log_box)
 
+        # 🔹 Controllo aggiornamenti all'avvio
+        self.check_update()
+
+    # =================== Funzioni UI ===================
     def add_file_field(self, label, value):
         self.layout.addWidget(QLabel(label))
         hl = QHBoxLayout()
@@ -134,6 +145,52 @@ class BackupApp(QWidget):
             self.log_box.append("Upload completato con successo.")
         else:
             self.log_box.append("Errore nell'upload.")
+
+    # Controllo aggiornamenti corretto
+    def check_update(self):
+        try:
+            url = "https://raw.githubusercontent.com/iAintNoth/Vaulta/main/version.txt"
+            response = requests.get(url, timeout=5)
+            latest_version = response.text.strip()
+            if latest_version != VERSION:
+                msg = QMessageBox(self)
+                msg.setWindowTitle("Aggiornamento disponibile")
+                msg.setTextFormat(Qt.RichText)
+                msg.setText(
+                    f"Nuova versione disponibile: {latest_version}<br>"
+                    f"Tu stai usando: {VERSION}"
+                )
+                msg.setInformativeText(
+                    'Clicca qui per aggiornare: <a href="https://www.tuosito.com">https://www.tuosito.com</a>'
+                )
+                msg.setTextInteractionFlags(Qt.TextBrowserInteraction)
+                msg.setStandardButtons(QMessageBox.Ok)
+                msg.setStyleSheet("""
+                    QMessageBox {
+                        background-color: #0D1117;
+                        color: #C9D1D9;
+                        font-family: 'Consolas', 'Courier New', monospace;
+                        font-size: 14px;
+                    }
+                    QPushButton {
+                        background-color: #6A5ACD;
+                        color: white;
+                        padding: 6px 12px;
+                        border-radius: 4px;
+                        font-weight: bold;
+                    }
+                    QPushButton:hover {
+                        background-color: #4B0082;
+                    }
+                    QLabel, QTextEdit {
+                        color: #C9D1D9;
+                    }
+                """)
+                msg.exec_()
+        except Exception as e:
+            print("Impossibile controllare aggiornamenti:", e)
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
