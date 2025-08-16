@@ -1,4 +1,4 @@
-backup_dir: C:/Users/danie/Desktop
+backup_dir: 
 encrypt_password: ''
 retention_days: 1
 sftp:
@@ -7,4 +7,4 @@ sftp:
   port: 22
   remote_dir: /pub/example
   username: demo
-source_dir: D:/0.3 Documenti/Curriculum/IT
+source_dir: 
